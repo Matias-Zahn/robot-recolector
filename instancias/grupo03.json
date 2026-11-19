@@ -1,0 +1,25 @@
+{
+  "grupo": "Grupo 03 · Bloque de pedido",
+  "filas": 6,
+  "columnas": 6,
+  "robotInicial": [6, 1],
+  "robotFinal": [6, 1],
+  "cajasIniciales": [
+    [1, 1],
+    [1, 5],
+    [2, 3],
+    [3, 6]
+  ],
+  "obstaculos": [
+    [2, 2],
+    [2, 4],
+    [3, 4],
+    [5, 3]
+  ],
+  "destinos": [
+    [5, 4],
+    [5, 5],
+    [6, 4],
+    [6, 5]
+  ]
+}

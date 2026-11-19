@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robot Recolector — Visualizador APD y Simulador (Grupo 03)</title>
+  <link rel="stylesheet" href="/web/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🤖</div>
+      <div>
+        <h1>Robot Recolector — Grupo 03 · Bloque de pedido</h1>
+        <p class="subtitle">Visualizador interactivo del Autómata de Pila Determinista (APD) y simulador 6×6</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <label class="select-wrap">
+        <span>Caso de prueba</span>
+        <select id="testSelect"></select>
+      </label>
+
+      <label class="btn btn-secondary file-btn">
+        Cargar .txt
+        <input type="file" id="fileInput" accept=".txt" hidden />
+      </label>
+
+      <button id="btnEvaluate" class="btn btn-primary">Evaluar programa</button>
+    </div>
+  </header>
+
+  <section id="statusBanner" class="status-banner status-neutral">
+    <span id="statusBadge" class="badge">LISTO</span>
+    <span id="statusMessage">Seleccioná un caso o editá el programa y presioná "Evaluar programa".</span>
+  </section>
+
+  <main class="dashboard">
+    <!-- COLUMNA IZQUIERDA: GRILLA + CONTROLES + MÉTRICAS -->
+    <section class="card card-world">
+      <div class="card-head">
+        <h2>Depósito 6×6</h2>
+        <div class="legend-inline">
+          <span><i class="dot dot-robot"></i>Robot</span>
+          <span><i class="dot dot-box"></i>Caja</span>
+          <span><i class="dot dot-target"></i>Destino T</span>
+          <span><i class="dot dot-obs"></i>Obstáculo X</span>
+        </div>
+      </div>
+
+      <div class="grid-wrapper">
+        <div class="col-headers">
+          <span></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+        </div>
+        <div class="grid-body">
+          <div class="row-headers">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+          </div>
+          <div id="gridContainer" class="grid-6x6"></div>
+        </div>
+      </div>
+
+      <!-- CONTROLES DE REPRODUCCIÓN -->
+      <div class="playback">
+        <div class="playback-buttons">
+          <button id="btnFirst" class="btn-icon" title="Inicio (0)">⏮</button>
+          <button id="btnPrev" class="btn-icon" title="Paso anterior (←)">◀</button>
+          <button id="btnPlay" class="btn btn-primary btn-play">▶ Reproducir</button>
+          <button id="btnNext" class="btn-icon" title="Paso siguiente (→)">▶</button>
+          <button id="btnLast" class="btn-icon" title="Final">⏭</button>
+        </div>
+
+        <div class="scrubber-row">
+          <input type="range" id="stepSlider" min="0" max="0" value="0" />
+          <span id="stepCounter" class="mono">Paso 0 / 0</span>
+        </div>
+
+        <div class="speed-row">
+          <label for="speedSlider">Velocidad:</label>
+          <input type="range" id="speedSlider" min="100" max="1200" step="50" value="420" />
+          <span id="speedLabel" class="mono">420 ms</span>
+        </div>
+      </div>
+
+      <!-- MÉTRICAS EN VIVO -->
+      <div class="metrics-grid">
+        <div class="metric">
+          <span class="metric-label">Token actual</span>
+          <strong id="metricToken" class="mono">—</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Posición / Pinza</span>
+          <strong id="metricPos" class="mono">(6,1) · Vacía</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Mov. sin / con carga</span>
+          <strong id="metricMoves" class="mono">0 / 0</strong>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Pila actual / Máx.</span>
+          <strong id="metricStack" class="mono">0 / 0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLUMNA CENTRAL: APD EN VIVO + PILA EXPLÍCITA -->
+    <section class="card card-pda">
+      <div class="card-head">
+        <h2>Autómata de Pila (APD) y Pila Explícita</h2>
+        <span id="pdaPhaseLabel" class="phase-pill">q₀ · Fuera de viaje</span>
+      </div>
+
+      <div class="pda-layout">
+        <!-- SVG INTERACTIVO DEL APD -->
+        <div class="svg-wrap">
+          <svg id="apSvg" viewBox="0 0 560 360" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+              </marker>
+              <marker id="arrow-active" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb" />
+              </marker>
+            </defs>
+
+            <!-- Flecha inicio -->
+            <line x1="12" y1="115" x2="48" y2="115" class="edge" marker-end="url(#arrow)" />
+
+            <!-- Aristas entre estados -->
+            <line id="edge-q0-q1" x1="120" y1="115" x2="226" y2="115" class="edge" marker-end="url(#arrow)" />
+            <text x="173" y="106" class="edge-label">viaje, Z₀/Z₀</text>
+
+            <line id="edge-q1-q2" x1="304" y1="115" x2="416" y2="115" class="edge" marker-end="url(#arrow)" />
+            <text x="360" y="106" class="edge-label">agarrar, X/X</text>
+
+            <line id="edge-q2-q3" x1="455" y1="154" x2="455" y2="236" class="edge" marker-end="url(#arrow)" />
+            <text x="502" y="199" class="edge-label">soltar, Z₀/Z₀</text>
+
+            <line id="edge-q3-q4" x1="416" y1="275" x2="306" y2="275" class="edge" marker-end="url(#arrow)" />
+            <text x="360" y="265" class="edge-label">finviaje, Z₀/Z₀</text>
+
+            <line id="edge-q4-q1" x1="265" y1="236" x2="265" y2="154" class="edge" marker-end="url(#arrow)" />
+            <text x="215" y="199" class="edge-label">viaje, Z₀/Z₀</text>
+
+            <!-- Self loops -->
+            <path id="edge-q0-q0" d="M 67 80 C 55 32, 115 32, 103 80" class="edge loop" marker-end="url(#arrow)" />
+            <text x="85" y="34" class="edge-label">d, Z₀/Z₀</text>
+
+            <path id="edge-q1-q1" d="M 247 80 C 235 32, 295 32, 283 80" class="edge loop" marker-end="url(#arrow)" />
+            <text x="265" y="22" class="edge-label">d, X / sym(d) X</text>
+            <text x="265" y="36" class="edge-sub">(apila ida)</text>
+
+            <path id="edge-q2-q2" d="M 437 80 C 425 32, 485 32, 473 80" class="edge loop" marker-end="url(#arrow)" />
+            <text x="455" y="22" class="edge-label">inv(top), top / ε</text>
+            <text x="455" y="36" class="edge-sub">(desapila vuelta)</text>
+
+            <path id="edge-q4-q4" d="M 283 310 C 295 352, 235 352, 247 310" class="edge loop" marker-end="url(#arrow)" />
+            <text x="265" y="352" class="edge-label">d, Z₀/Z₀</text>
+
+            <!-- Nodos -->
+            <g id="node-q0" class="state-node" transform="translate(85, 115)">
+              <circle r="34" />
+              <text y="-2" class="state-title">q₀</text>
+              <text y="14" class="state-sub">0 viajes</text>
+            </g>
+
+            <g id="node-q1" class="state-node" transform="translate(265, 115)">
+              <circle r="34" />
+              <text y="-2" class="state-title">q₁</text>
+              <text y="14" class="state-sub">Ida</text>
+            </g>
+
+            <g id="node-q2" class="state-node" transform="translate(455, 115)">
+              <circle r="34" />
+              <text y="-2" class="state-title">q₂</text>
+              <text y="14" class="state-sub">Vuelta</text>
+            </g>
+
+            <g id="node-q3" class="state-node" transform="translate(455, 275)">
+              <circle r="34" />
+              <text y="-2" class="state-title">q₃</text>
+              <text y="14" class="state-sub">Cierre</text>
+            </g>
+
+            <g id="node-q4" class="state-node state-final" transform="translate(265, 275)">
+              <circle r="34" />
+              <circle r="28" class="inner-ring" />
+              <text y="-2" class="state-title">q₄</text>
+              <text y="14" class="state-sub">Final</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- PILA VISUAL LIFO -->
+        <div class="stack-panel">
+          <div class="stack-header">
+            <span>Pila LIFO</span>
+            <small id="stackTopHint" class="mono">Tope: Z₀</small>
+          </div>
+          <div id="stackVisual" class="stack-visual"></div>
+        </div>
+      </div>
+
+      <div id="stepDetailBox" class="step-detail">
+        Esperando ejecución...
+      </div>
+    </section>
+
+    <!-- COLUMNA DERECHA: EDITOR / TOKENS / TABLA REGISTRO -->
+    <section class="card card-program">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tokens">Tokens en vivo</button>
+        <button class="tab-btn" data-tab="editor">Editar programa</button>
+        <button class="tab-btn" data-tab="log">Registro / CSV</button>
+      </div>
+
+      <div id="tab-tokens" class="tab-pane active">
+        <p class="hint">Hacé clic en cualquier token para saltar directo a ese paso.</p>
+        <div id="tokenList" class="token-list"></div>
+      </div>
+
+      <div id="tab-editor" class="tab-pane">
+        <p class="hint">Palabras reservadas: <code>arriba</code>, <code>abajo</code>, <code>izquierda</code>, <code>derecha</code>, <code>agarrar</code>, <code>soltar</code>, <code>viaje</code>, <code>finviaje</code>.</p>
+        <textarea id="programEditor" spellcheck="false" placeholder="Escribí o pegá un programa aquí..."></textarea>
+        <div class="editor-actions">
+          <button id="btnRunEditor" class="btn btn-primary">Evaluar cambios</button>
+        </div>
+      </div>
+
+      <div id="tab-log" class="tab-pane">
+        <div class="log-actions">
+          <span class="hint">Registro por token (estado del AP, pila, posición y carga)</span>
+          <button id="btnDownloadCsv" class="btn btn-secondary btn-sm">Descargar CSV</button>
+        </div>
+        <div class="table-scroll">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Orden</th>
+                <th>AP</th>
+                <th>Pila</th>
+                <th>Pos</th>
+                <th>Carga</th>
+              </tr>
+            </thead>
+            <tbody id="logTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/web/app.js"></script>
+</body>
+</html>

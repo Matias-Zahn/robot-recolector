@@ -1,0 +1,110 @@
+======================================================================
+ROBOT RECOLECTOR — Grupo 03 · Bloque de pedido
+Programa:  pruebas/01_solucion_grupo03.txt
+Resultado: MISION_RESUELTA
+Detalle:   Todas las cajas están en los destinos obligatorios, el robot regresó a la posición final y la pinza está vacía.
+======================================================================
+Tokens leídos: 66 | Estado final AP: q4 | Altura máx. pila (sin Z0): 7
+Movimientos sin carga: 30 | Movimientos con carga: 20 | Total movimientos: 50
+
+--- Grilla Inicial ---
+       1    2    3    4    5    6  
+    +----+----+----+----+----+----+
+  1 |  C |  . |  . |  . |  C |  . |
+    +----+----+----+----+----+----+
+  2 |  . |  X |  C |  X |  . |  . |
+    +----+----+----+----+----+----+
+  3 |  . |  . |  . |  X |  . |  C |
+    +----+----+----+----+----+----+
+  4 |  . |  . |  . |  . |  . |  . |
+    +----+----+----+----+----+----+
+  5 |  . |  . |  X |  T |  T |  . |
+    +----+----+----+----+----+----+
+  6 |  R |  . |  . |  T |  T |  . |
+    +----+----+----+----+----+----+
+
+--- Grilla Final ---
+       1    2    3    4    5    6  
+    +----+----+----+----+----+----+
+  1 |  . |  . |  . |  . |  . |  . |
+    +----+----+----+----+----+----+
+  2 |  . |  X |  . |  X |  . |  . |
+    +----+----+----+----+----+----+
+  3 |  . |  . |  . |  X |  . |  . |
+    +----+----+----+----+----+----+
+  4 |  . |  . |  . |  . |  . |  . |
+    +----+----+----+----+----+----+
+  5 |  . |  . |  X |C/T |C/T |  . |
+    +----+----+----+----+----+----+
+  6 |  R |  . |  . |C/T |C/T |  . |
+    +----+----+----+----+----+----+
+
+--- Registro por token ---
+Idx | Orden      | Est | Pila (tope a izq.)          | Pos   | Carga
+----+------------+-----+-----------------------------+-------+---------
+  1 | derecha    | q0  | Z0                          | (6,2) | vacia
+  2 | derecha    | q0  | Z0                          | (6,3) | vacia
+  3 | derecha    | q0  | Z0                          | (6,4) | vacia
+  4 | viaje      | q1  | Z0                          | (6,4) | vacia
+  5 | arriba     | q1  | AR Z0                       | (5,4) | vacia
+  6 | arriba     | q1  | AR AR Z0                    | (4,4) | vacia
+  7 | izquierda  | q1  | IZ AR AR Z0                 | (4,3) | vacia
+  8 | arriba     | q1  | AR IZ AR AR Z0              | (3,3) | vacia
+  9 | arriba     | q1  | AR AR IZ AR AR Z0           | (2,3) | vacia
+ 10 | agarrar    | q2  | AR AR IZ AR AR Z0           | (2,3) | con_caja
+ 11 | abajo      | q2  | AR IZ AR AR Z0              | (3,3) | con_caja
+ 12 | abajo      | q2  | IZ AR AR Z0                 | (4,3) | con_caja
+ 13 | derecha    | q2  | AR AR Z0                    | (4,4) | con_caja
+ 14 | abajo      | q2  | AR Z0                       | (5,4) | con_caja
+ 15 | abajo      | q2  | Z0                          | (6,4) | con_caja
+ 16 | soltar     | q3  | Z0                          | (6,4) | vacia
+ 17 | finviaje   | q4  | Z0                          | (6,4) | vacia
+ 18 | derecha    | q4  | Z0                          | (6,5) | vacia
+ 19 | viaje      | q1  | Z0                          | (6,5) | vacia
+ 20 | arriba     | q1  | AR Z0                       | (5,5) | vacia
+ 21 | arriba     | q1  | AR AR Z0                    | (4,5) | vacia
+ 22 | arriba     | q1  | AR AR AR Z0                 | (3,5) | vacia
+ 23 | derecha    | q1  | DE AR AR AR Z0              | (3,6) | vacia
+ 24 | agarrar    | q2  | DE AR AR AR Z0              | (3,6) | con_caja
+ 25 | izquierda  | q2  | AR AR AR Z0                 | (3,5) | con_caja
+ 26 | abajo      | q2  | AR AR Z0                    | (4,5) | con_caja
+ 27 | abajo      | q2  | AR Z0                       | (5,5) | con_caja
+ 28 | abajo      | q2  | Z0                          | (6,5) | con_caja
+ 29 | soltar     | q3  | Z0                          | (6,5) | vacia
+ 30 | finviaje   | q4  | Z0                          | (6,5) | vacia
+ 31 | arriba     | q4  | Z0                          | (5,5) | vacia
+ 32 | viaje      | q1  | Z0                          | (5,5) | vacia
+ 33 | arriba     | q1  | AR Z0                       | (4,5) | vacia
+ 34 | arriba     | q1  | AR AR Z0                    | (3,5) | vacia
+ 35 | arriba     | q1  | AR AR AR Z0                 | (2,5) | vacia
+ 36 | arriba     | q1  | AR AR AR AR Z0              | (1,5) | vacia
+ 37 | agarrar    | q2  | AR AR AR AR Z0              | (1,5) | con_caja
+ 38 | abajo      | q2  | AR AR AR Z0                 | (2,5) | con_caja
+ 39 | abajo      | q2  | AR AR Z0                    | (3,5) | con_caja
+ 40 | abajo      | q2  | AR Z0                       | (4,5) | con_caja
+ 41 | abajo      | q2  | Z0                          | (5,5) | con_caja
+ 42 | soltar     | q3  | Z0                          | (5,5) | vacia
+ 43 | finviaje   | q4  | Z0                          | (5,5) | vacia
+ 44 | izquierda  | q4  | Z0                          | (5,4) | vacia
+ 45 | viaje      | q1  | Z0                          | (5,4) | vacia
+ 46 | arriba     | q1  | AR Z0                       | (4,4) | vacia
+ 47 | izquierda  | q1  | IZ AR Z0                    | (4,3) | vacia
+ 48 | izquierda  | q1  | IZ IZ AR Z0                 | (4,2) | vacia
+ 49 | izquierda  | q1  | IZ IZ IZ AR Z0              | (4,1) | vacia
+ 50 | arriba     | q1  | AR IZ IZ IZ AR Z0           | (3,1) | vacia
+ 51 | arriba     | q1  | AR AR IZ IZ IZ AR Z0        | (2,1) | vacia
+ 52 | arriba     | q1  | AR AR AR IZ IZ IZ AR Z0     | (1,1) | vacia
+ 53 | agarrar    | q2  | AR AR AR IZ IZ IZ AR Z0     | (1,1) | con_caja
+ 54 | abajo      | q2  | AR AR IZ IZ IZ AR Z0        | (2,1) | con_caja
+ 55 | abajo      | q2  | AR IZ IZ IZ AR Z0           | (3,1) | con_caja
+ 56 | abajo      | q2  | IZ IZ IZ AR Z0              | (4,1) | con_caja
+ 57 | derecha    | q2  | IZ IZ AR Z0                 | (4,2) | con_caja
+ 58 | derecha    | q2  | IZ AR Z0                    | (4,3) | con_caja
+ 59 | derecha    | q2  | AR Z0                       | (4,4) | con_caja
+ 60 | abajo      | q2  | Z0                          | (5,4) | con_caja
+ 61 | soltar     | q3  | Z0                          | (5,4) | vacia
+ 62 | finviaje   | q4  | Z0                          | (5,4) | vacia
+ 63 | abajo      | q4  | Z0                          | (6,4) | vacia
+ 64 | izquierda  | q4  | Z0                          | (6,3) | vacia
+ 65 | izquierda  | q4  | Z0                          | (6,2) | vacia
+ 66 | izquierda  | q4  | Z0                          | (6,1) | vacia

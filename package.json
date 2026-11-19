@@ -1,0 +1,11 @@
+{
+  "name": "tp-robot-recolector-grupo03",
+  "version": "1.0.0",
+  "description": "Reconocedor AP con pila explícita y simulador de mundo 6x6 — FTI Grupo 03 (Bloque de pedido)",
+  "type": "module",
+  "scripts": {
+    "solucion": "node src/main.js pruebas/01_solucion_grupo03.txt --instancia instancias/grupo03.json --csv registros/solucion_grupo03.csv --txt registros/solucion_grupo03.txt",
+    "test": "node src/run_tests.js",
+    "web": "node src/server.js"
+  }
+}
